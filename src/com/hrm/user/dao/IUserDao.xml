@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrm.user.dao.IUserDao">
+
+	<select id="selectUser" resultType="User">
+		select * from user_inf where
+		loginname=#{loginname} and password=#{password}
+	</select>
+
+	<!-- 用户总数 -->
+	<select id="selectCount" resultType="int">
+		select count(id) from user_inf
+		<where>
+			<if test="username != null">
+				username like "%"#{username}"%"
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+		</where>
+	</select>
+
+	<!-- 用户信息 -->
+	<select id="selectUserByPage" resultType="User">
+		select * from user_inf
+		<where>
+			<if test="username != null">
+				username like "%"#{username}"%"
+			</if>
+			<if test="status != null">
+				and status = #{status}
+			</if>
+		</where>
+		<if test="start != null and pageSize != null">
+			limit #{start},#{pageSize}
+		</if>
+	</select>
+	<insert id="insertUser">
+		insert into user_inf
+		(username,status,loginname,password,createdate) values
+		(#{username},#{status},#{loginname},#{password},#{createdate})
+	</insert>
+	<!-- 修改需要的回显信息 -->
+	<select id="selectUserById" resultType="User">
+		select * from user_inf where id=#{id}
+	</select>
+	<update id="updateUser">
+		update user_inf set username=#{username},status=#{status},loginname=#{loginname},password=#{password}
+		where id=#{id}
+	</update>
+	<delete id="deleteUser">
+		delete from user_inf where id=#{uid}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrm.document.dao.IDocumentDao">
+	
+	
+	<select id="selectUserById" resultType="User">
+		select * from user_inf where id=#{user_id}
+	</select>
+	
+	<resultMap  type="Document" id="DocumentMap">
+	<id column="id" property="id"/>
+	<result column="title" property="title"/>
+	<result column="filename" property="filename"/>
+	<result column="remark" property="remark"/>
+	<result column="create_date" property="create_date"/>
+	<association property="user" 
+	javaType="User"
+	select="selectUserById"
+	column="user_id"
+	/>
+	</resultMap>
+	
+	<!-- 文件信息 -->
+	<select id="selectDocument" resultMap="DocumentMap">
+		select * from document_inf
+		<where>
+			<if test="title != null">
+				title like "%"#{title}"%"
+			</if>
+		</where>
+		<if test="start != null and pageSize != null">
+			limit #{start},#{pageSize}
+		</if>
+	</select>
+	
+</mapper>

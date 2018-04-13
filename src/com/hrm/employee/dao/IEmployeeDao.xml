@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrm.employee.dao.IEmployeeDao">
+	<!-- 员工总数 -->
+	<select id="selectEmployeeCount" resultType="int">
+		select count(id) from employee_inf
+		<where>
+			<if test="employee.job != null">
+				job_id = #{employee.job.id}
+			</if>
+			<if test="employee.name != null">
+				and name like "%"#{employee.name}"%"
+			</if>
+			<if test="employee.cardId != null">
+				and card_id like "%"#{employee.cardId}"%"
+			</if>
+			<if test="employee.sex != null">
+				and sex = #{employee.sex}
+			</if>
+			<if test="employee.phone != null">
+				and phone like "%"#{employee.phone}"%"
+			</if>
+			<if test="employee.dept != null">
+				and dept_id = #{employee.dept.id}  
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectJobById" resultType="Job">
+		select * from job_inf where id=#{employee.job.id}
+	</select>
+	<select id="selectDeptById" resultType="Dept">
+		select * from dept_inf where id=#{employee.dept.id}
+	</select>
+	<!-- 内部的id和result分别对应主键和普通字段定义，column指数据表中字段名，property指实体类中属性名。 -->
+	<resultMap  type="Employee" id="employeeMap">
+	<id column="id" property="id"/>
+	<result column="name" property="name"/>
+	<result column="card_id" property="cardId"/>
+	<result column="address" property="address"/>
+	<result column="post_code" property="postCode"/>
+	
+	<result column="tel" property="tel"/>
+	<result column="phone" property="phone"/>
+	<result column="qq_num" property="qqNum"/>
+	<result column="eamil" property="eamil"/>
+	
+	<result column="sex" property="sex"/>
+	<result column="party" property="party"/>
+	<result column="birthday" property="birthday"/>
+	<result column="race" property="race"/>
+	
+	<result column="education" property="education"/>
+	<result column="speciality" property="speciality"/>
+	<result column="hobby" property="hobby"/>
+	<result column="remark" property="remark"/>
+	<result column="create_date" property="createDate"/>
+	
+	<association property="job" 
+	javaType="Job"
+	select="selectJobById"
+	column="job_id"
+	/>
+	<association property="dept" 
+	javaType="Dept"
+	select="selectDeptById"
+	column="dept_id"
+	/>
+	</resultMap>
+	
+	<!-- 员工信息 -->
+	<select id="selectEmployee" resultMap="employeeMap">
+		select * from employee_inf
+		<where>
+			<if test="employee.job != null">
+				job_id = #{employee.job.id}
+			</if>
+			<if test="employee.name != null">
+				and name like "%"#{employee.name}"%"
+			</if>
+			<if test="employee.cardId != null">
+				and card_id like "%"#{employee.cardId}"%"
+			</if>
+			<if test="employee.sex != null">
+				and sex = #{employee.sex}
+			</if>
+			<if test="employee.phone != null">
+				and phone like "%"#{employee.phone}"%"
+			</if>
+			<if test="employee.dept != null">
+				and dept_id = #{employee.dept.id} 
+			</if>
+		</where>
+		<if test="start != null and pageSize != null">
+			limit #{start},#{pageSize}
+		</if>
+	</select>
+	<select id="selectEmployeeById" resultMap="employeeMap">
+	select * from employee_inf where id = #{id}
+	</select>
+	<insert id="insertEmployee">
+		insert into employee_inf (dept_id,job_id,name,card_id,address,post_code,tel,phone,qq_num,email,sex,party,race,education,speciality,hobby,remark,create_date) 
+		values (#{dept.id},#{job.id},#{name},#{cardId},#{address},#{postCode},#{tel},#{phone},#{qqNum},#{email},#{sex},#{party},#{race},#{education},#{speciality},#{hobby},#{remark},#{createDate})
+	</insert>
+	
+	<update id="updateEmployee">
+		update employee_inf set dept_id=#{dept.id},job_id=#{job.id},name=#{name},card_id=#{cardId},address=#{address},post_code=#{postCode},tel=#{tel}
+		,phone=#{phone},qq_num=#{qqNum},email=#{email},sex=#{sex},party=#{party},race=#{race},education=#{education},speciality=#{speciality},
+		hobby=#{hobby},remark=#{remark},create_date=#{createDate} where id=#{id} 
+	</update>
+</mapper>
