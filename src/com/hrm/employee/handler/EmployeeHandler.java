@@ -43,6 +43,7 @@ public class EmployeeHandler {
 	
 	@RequestMapping("/addEmployee.do")
 	public String addEmployee(String flag,Integer job_id,Integer dept_id,Employee employee,Model model){
+		//flag=1时，表示进入到添加雇员页面
 		if(flag.equals("1") ) {
 			List<Job> jobs= employeeService.findAllJob();
 			List<Dept> depts= employeeService.findAllDept();
